@@ -31,6 +31,10 @@ defmodule RayTracerElixir.Tuple do
     subtract(new(0, 0, 0, 0), tuple)
   end
 
+  def multiply(tuple, scalar) do
+    new(tuple.x * scalar, tuple.y * scalar, tuple.z * scalar, tuple.w * scalar)
+  end
+
   def equal?(a, b) do
     close?(a.x, b.x) && close?(a.y, b.y) && close?(a.z, b.z) && close?(a.w, b.w)
   end

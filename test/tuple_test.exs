@@ -75,4 +75,9 @@ defmodule RayTracerElixir.TupleTest do
     a = Tuple.new(1, -2, 3, -4)
     assert Tuple.equal?(Tuple.negate(a), Tuple.new(-1, 2, -3, 4))
   end
+
+  test "multiplying a tuple by a scalar" do
+    a = Tuple.new(1, -2, 3, -4)
+    assert Tuple.equal?(Tuple.multiply(a, 3.5), Tuple.new(3.5, -7, 10.5, -14))
+  end
 end
