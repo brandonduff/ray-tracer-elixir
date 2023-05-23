@@ -80,4 +80,49 @@ defmodule RayTracerElixir.TupleTest do
     a = Tuple.new(1, -2, 3, -4)
     assert Tuple.equal?(Tuple.multiply(a, 3.5), Tuple.new(3.5, -7, 10.5, -14))
   end
+
+  test "multiplying a tuple by a fraction" do
+    a = Tuple.new(1, -2, 3, -4)
+    assert Tuple.equal?(Tuple.multiply(a, 0.5), Tuple.new(0.5, -1, 1.5, -2))
+  end
+
+  test "dividing a tuple by a scalar" do
+    a = Tuple.new(1, -2, 3, -4)
+    assert Tuple.equal?(Tuple.divide(a, 2), Tuple.new(0.5, -1, 1.5, -2))
+  end
+
+  test "magnitude of vectors" do
+    v = Tuple.new_vector(1, 0, 0)
+    assert Tuple.magnitude(v) == 1
+
+    v = Tuple.new_vector(0, 1, 0)
+    assert Tuple.magnitude(v) == 1
+
+    v = Tuple.new_vector(0, 0, 1)
+    assert Tuple.magnitude(v) == 1
+
+    v = Tuple.new_vector(1, 2, 3)
+    assert Tuple.magnitude(v) == :math.sqrt(14)
+
+    v = Tuple.new_vector(-1, -2, -3)
+    assert Tuple.magnitude(v) == :math.sqrt(14)
+  end
+
+  test "normalizing vectors" do
+    v = Tuple.new_vector(4, 0, 0)
+    assert Tuple.equal?(Tuple.normalize(v), Tuple.new_vector(1, 0, 0))
+
+    v = Tuple.new_vector(1, 2, 3)
+    assert Tuple.equal?(Tuple.normalize(v), Tuple.new_vector(0.26726, 0.53452, 0.80178))
+
+    assert Tuple.magnitude(Tuple.normalize(v)) == 1
+  end
+
+  test "dot product of two tuples" do
+    a = Tuple.new_vector(1, 2, 3)
+    b = Tuple.new_vector(2, 3, 4)
+    assert Tuple.dot(a, b) == 20
+  end
+
+  # TODO: cross product (pp 11)
 end
