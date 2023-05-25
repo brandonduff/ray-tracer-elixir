@@ -57,6 +57,14 @@ defmodule RayTracerElixir.Tuple do
     zip_components(a, b, &Kernel.*/2) |> Enum.sum()
   end
 
+  def cross(a, b) do
+    new_vector(
+      a.y * b.z - a.z * b.y,
+      a.z * b.x - a.x * b.z,
+      a.x * b.y - a.y * b.x
+    )
+  end
+
   def equal?(a, b) do
     zip_components(a, b, fn c1, c2 -> close?(c1, c2) end) |> Enum.all?()
   end

@@ -124,5 +124,10 @@ defmodule RayTracerElixir.TupleTest do
     assert Tuple.dot(a, b) == 20
   end
 
-  # TODO: cross product (pp 11)
+  test "cross product" do
+    a = Tuple.new_vector(1, 2, 3)
+    b = Tuple.new_vector(2, 3, 4)
+    assert Tuple.equal?(Tuple.cross(a, b), Tuple.new_vector(-1, 2, -1))
+    assert Tuple.equal?(Tuple.cross(b, a), Tuple.new_vector(1, -2, 1))
+  end
 end
