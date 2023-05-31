@@ -1,8 +1,12 @@
 defmodule RayTracerElixir.Tuple do
+  @behaviour RayTracerElixir.Components
+  use RayTracerElixir.ComponentOperations
+
   def new(x, y, z, w) do
     %{x: x, y: y, z: z, w: w}
   end
 
+  @impl RayTracerElixir.Components
   def new([x, y, z, w]) do
     new(x, y, z, w)
   end
@@ -21,26 +25,6 @@ defmodule RayTracerElixir.Tuple do
 
   def vector?(tuple) do
     tuple.w == 0
-  end
-
-  def add(a, b) do
-    zip_components(a, b, &Kernel.+/2) |> new()
-  end
-
-  def subtract(a, b) do
-    zip_components(a, b, &Kernel.-/2) |> new()
-  end
-
-  def negate(tuple) do
-    subtract(new(0, 0, 0, 0), tuple)
-  end
-
-  def multiply(tuple, scalar) do
-    map_components(tuple, fn c -> c * scalar end)
-  end
-
-  def divide(tuple, scalar) do
-    map_components(tuple, fn c -> c / scalar end)
   end
 
   def magnitude(vector) do
@@ -65,27 +49,8 @@ defmodule RayTracerElixir.Tuple do
     )
   end
 
-  def equal?(a, b) do
-    zip_components(a, b, fn c1, c2 -> close?(c1, c2) end) |> Enum.all?()
-  end
-
-  defp close?(a, b) do
-    abs(a - b) < 0.00001
-  end
-
-  defp map_components(tuple, func) do
-    apply(__MODULE__, :new, Enum.map(components(tuple), func))
-  end
-
-  defp zip_components(a, b, func) do
-    Enum.zip_with(components(a), components(b), func)
-  end
-
-  defp reduce_components(tuple, func) do
-    Enum.reduce(components(tuple), func)
-  end
-
-  defp components(tuple) do
+  @impl RayTracerElixir.Components
+  def components(tuple) do
     [tuple.x, tuple.y, tuple.z, tuple.w]
   end
 end
