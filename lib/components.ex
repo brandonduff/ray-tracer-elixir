@@ -4,6 +4,8 @@ defmodule RayTracerElixir.Components do
 end
 
 defmodule RayTracerElixir.ComponentOperations do
+  alias __MODULE__
+
   defmacro __using__(_) do
     quote do
       def add(a, b) do
@@ -27,11 +29,7 @@ defmodule RayTracerElixir.ComponentOperations do
       end
 
       def equal?(a, b) do
-        zip_components(a, b, fn c1, c2 -> close?(c1, c2) end) |> Enum.all?()
-      end
-
-      defp close?(a, b) do
-        abs(a - b) < 0.00001
+        zip_components(a, b, fn c1, c2 -> ComponentOperations.close?(c1, c2) end) |> Enum.all?()
       end
 
       defp map_components(tuple, func) do
@@ -46,5 +44,9 @@ defmodule RayTracerElixir.ComponentOperations do
         Enum.reduce(components(tuple), func)
       end
     end
+  end
+
+  def close?(a, b) do
+    abs(a - b) < 0.00001
   end
 end

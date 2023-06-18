@@ -21,7 +21,7 @@ defmodule RayTracerElixir.ColorTest do
     assert Color.equal?(Color.subtract(c1, c2), Color.new(0.2, 0.5, 0.5))
   end
 
-  test "multiplying a color by a scalr" do
+  test "multiplying a color by a scalar" do
     c = Color.new(0.2, 0.3, 0.4)
     assert Color.equal?(Color.multiply(c, 2), Color.new(0.4, 0.6, 0.8))
   end
