@@ -20,7 +20,7 @@ defmodule RayTracerElixir.ComponentOperations do
         subtract(new([0, 0, 0, 0]), tuple)
       end
 
-      def multiply(tuple, scalar) do
+      def multiply(tuple, scalar) when is_number(scalar) do
         map_components(tuple, fn c -> c * scalar end)
       end
 

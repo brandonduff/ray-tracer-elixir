@@ -1,5 +1,6 @@
 defmodule RayTracerElixir.Color do
   @behaviour RayTracerElixir.Components
+
   use RayTracerElixir.ComponentOperations
 
   defstruct [:red, :green, :blue]
@@ -17,5 +18,9 @@ defmodule RayTracerElixir.Color do
   @impl RayTracerElixir.Components
   def components(color) do
     [color.red, color.green, color.blue]
+  end
+
+  def multiply(c1, c2) when is_struct(c2) do
+    zip_components(c1, c2, &Kernel.*/2) |> new()
   end
 end

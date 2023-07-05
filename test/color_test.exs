@@ -25,4 +25,10 @@ defmodule RayTracerElixir.ColorTest do
     c = Color.new(0.2, 0.3, 0.4)
     assert Color.equal?(Color.multiply(c, 2), Color.new(0.4, 0.6, 0.8))
   end
+
+  test "multiplying two colors (hadamard product)" do
+    c1 = Color.new(1, 0.2, 0.4)
+    c2 = Color.new(0.9, 1, 0.1)
+    assert Color.equal?(Color.multiply(c1, c2), Color.new(0.9, 0.2, 0.04))
+  end
 end
