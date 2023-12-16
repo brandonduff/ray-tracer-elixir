@@ -24,3 +24,5 @@ ray_tracer_elixir-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+.idea
