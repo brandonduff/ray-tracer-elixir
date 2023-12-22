@@ -1,7 +1,7 @@
 defmodule RayTracerElixir.Playground do
   def tick(env, proj) do
-    position = Components.add(proj.position, proj.velocity)
-    velocity = Components.add(proj.velocity, Components.add(env.gravity, env.wind))
+    position = Tuple.add(proj.position, proj.velocity)
+    velocity = Tuple.add(proj.velocity, Tuple.add(env.gravity, env.wind))
     projectile(position, velocity)
   end
 
