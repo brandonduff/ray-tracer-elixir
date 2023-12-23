@@ -32,4 +32,10 @@ defmodule RayTracerElixir.ColorTest do
     c2 = Color.new(0.9, 1, 0.1)
     assert Tuple.equal?(Tuple.multiply(c1, c2), Tuple.new(0.9, 0.2, 0.04))
   end
+
+  test "scaling pixel output and clamping" do
+    assert Color.new(255, 0, 0) == Color.scale(Color.new(1.5, 0, 0), 255)
+    assert Color.new(0, 128, 0) == Color.scale(Color.new(0, 0.5, 0), 255)
+    assert Color.new(0, 0, 255) == Color.scale(Color.new(-0.5, 0, 1), 255)
+  end
 end
