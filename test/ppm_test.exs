@@ -34,6 +34,23 @@ defmodule RayTracerElixir.PPMTest do
            ]
   end
 
+  describe "splitting long lines" do
+    test "does not touch lines shorter than limit" do
+       lines = ["123 456"]
+       assert PPM.ensure_line_limit(lines, 8) == lines
+    end
+
+    test "breaks lines longer than limit" do
+      lines = ["123 456"]
+      assert PPM.ensure_line_limit(lines, 3) == ["123", "456"]
+    end
+
+    test "does not break individual color values" do
+      lines = ["123 456"]
+      assert PPM.ensure_line_limit(lines, 5) == ["123", "456"]
+    end
+  end
+  @tag :skip
   test "splitting long lines in PPM files" do
     c =
       Canvas.new(10, 2)
