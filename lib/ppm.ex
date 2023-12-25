@@ -1,10 +1,14 @@
 defmodule RayTracerElixir.PPM do
+  alias RayTracerElixir.Color
+
+  @scale 255
+
   def write(canvas) do
     lines = print_lines(canvas.pixels)
     """
     P3
     #{canvas.width} #{canvas.height}
-    225
+    #{@scale}
     #{lines}
     """
   end
@@ -15,6 +19,7 @@ defmodule RayTracerElixir.PPM do
 
   defp print_line(pixels) do
     pixels
+    |> Enum.map(&(Color.scale(&1, @scale)))
     |> Enum.map(fn pixel -> "#{pixel.red} #{pixel.green} #{pixel.blue}" end)
     |> Enum.join(" ")
   end

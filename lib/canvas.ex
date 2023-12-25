@@ -6,11 +6,19 @@ defmodule RayTracerElixir.Canvas do
   end
 
   def write_pixel(canvas, x, y, pixel) do
-    put_in(canvas, [:pixels, Access.at(x), Access.at(y)], pixel)
+    put_in(canvas, [:pixels, Access.at(y), Access.at(x)], pixel)
   end
 
   def pixel_at(canvas, x, y) do
-    get_in(canvas, [:pixels, Access.at(x), Access.at(y)])
+    get_in(canvas, [:pixels, Access.at(y), Access.at(x)])
+  end
+
+  def transform(canvas, transformer) do
+    Enum.reduce(Range.new(0, canvas.width - 1), canvas, fn x, c ->
+      Enum.reduce(Range.new(0, canvas.height - 1), c, fn y, acc ->
+        transformer.(acc, x, y)
+      end)
+    end)
   end
 
   defp init_pixels(width, height) do

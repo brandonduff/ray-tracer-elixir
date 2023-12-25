@@ -10,10 +10,9 @@ defmodule RayTracerElixir.PPMTest do
     ppm = PPM.write(c)
     lines = PPM.lines(ppm)
 
-    assert Enum.slice(lines, 0..2) == ["P3", "5 3", "225"]
+    assert Enum.slice(lines, 0..2) == ["P3", "5 3", "255"]
   end
 
-  @tag :skip
   test "constructing PPM pixel data" do
     c = Canvas.new(5, 3)
     c1 = Color.new(1.5, 0, 0)
@@ -32,6 +31,23 @@ defmodule RayTracerElixir.PPMTest do
              "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
              "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0",
              "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255"
+           ]
+  end
+
+  test "splitting long lines in PPM files" do
+    c =
+      Canvas.new(10, 2)
+      |> Canvas.transform(fn canvas, x, y ->
+        Canvas.write_pixel(canvas, x, y, Color.new(1, 0.8, 0.6))
+      end)
+
+    lines = PPM.write(c) |> PPM.lines()
+
+    assert Enum.slice(lines, 3..6) == [
+             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204",
+             "153 255 204 153 255 204 153 255 204 153 255 204 153",
+             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204",
+             "153 255 204 153 255 204 153 255 204 153 255 204 153"
            ]
   end
 end
