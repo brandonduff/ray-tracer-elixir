@@ -20,12 +20,23 @@ defmodule RayTracerElixir.PPM do
 
   def ensure_line_limit(lines, limit) do
     Enum.map(lines, fn line ->
-      {left, right} = String.split_at(line, limit)
-      [left, right]
+      values = String.split(line)
+
+      Enum.reduce(values, [[]], fn value, [current_line | lines] ->
+        number_of_spaces = length(current_line) - 1
+        character_count = Enum.map(current_line, &String.length/1) |> Enum.sum()
+
+        if number_of_spaces + character_count + String.length(value) < limit do
+          [current_line ++ [value] | lines]
+        else
+          [[value] | [current_line | lines]]
+        end
+      end) |> Enum.reverse()
+    end)
+    |> Enum.map(fn lines ->
+      Enum.map(lines, &Enum.join(&1, " "))
     end)
     |> List.flatten()
-    |> Enum.filter(fn line -> line != "" end)
-    |> Enum.map(&String.trim/1)
   end
 
   defp print_line(pixels) do
@@ -38,6 +49,7 @@ defmodule RayTracerElixir.PPM do
   defp print_lines(pixel_grid) do
     pixel_grid
     |> Enum.map(&print_line/1)
+    |> ensure_line_limit(70)
     |> Enum.join("\n")
   end
 end

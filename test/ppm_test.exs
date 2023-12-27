@@ -50,7 +50,7 @@ defmodule RayTracerElixir.PPMTest do
       assert PPM.ensure_line_limit(lines, 5) == ["123", "456"]
     end
   end
-  @tag :skip
+
   test "splitting long lines in PPM files" do
     c =
       Canvas.new(10, 2)
