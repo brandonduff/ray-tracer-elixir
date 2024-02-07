@@ -1,5 +1,6 @@
 defmodule RayTracerElixir.ColorTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
+
   alias RayTracerElixir.Color
   alias RayTracerElixir.Tuple
 
