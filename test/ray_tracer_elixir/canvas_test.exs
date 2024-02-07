@@ -1,4 +1,4 @@
-defmodule CanvasTest do
+defmodule RayTracerElixir.CanvasTest do
   use ExUnit.Case, async: true
 
   alias RayTracerElixir.Color

@@ -1,4 +1,4 @@
-defmodule MatrixTest do
+defmodule RayTracerElixir.MatrixTest do
   use ExUnit.Case, async: true
 
   alias RayTracerElixir.Matrix
