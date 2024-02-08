@@ -21,4 +21,25 @@ defmodule RayTracerElixir.MatrixTest do
     assert Matrix.get(m, {3, 0}) == 13.5
     assert Matrix.get(m, {3, 2}) == 15.5
   end
+
+  test "can represent a 2x2 matrix" do
+    data = [[-3, 5], [1, -2]]
+
+    m = Matrix.new(data)
+
+    assert Matrix.get(m, {0, 0}) == -3
+    assert Matrix.get(m, {0, 1}) == 5
+    assert Matrix.get(m, {1, 0}) == 1
+    assert Matrix.get(m, {1, 1}) == -2
+  end
+
+  test "can represent a 3x3 matrix" do
+    data = [[-3, 5, 0], [1, -2, -7], [0, 1, 1]]
+
+    m = Matrix.new(data)
+
+    assert Matrix.get(m, {0, 0}) == -3
+    assert Matrix.get(m, {1, 1}) == -2
+    assert Matrix.get(m, {2, 2}) == 1
+  end
 end
