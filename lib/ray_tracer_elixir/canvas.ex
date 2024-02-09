@@ -22,8 +22,10 @@ defmodule RayTracerElixir.Canvas do
   end
 
   defp init_pixels(width, height) do
-    Enum.map(Range.new(0, height - 1), fn _ ->
-      Enum.map(Range.new(0, width - 1), fn _ -> Color.new(0, 0, 0) end)
-    end)
+    for _i <- 0..(height - 1) do
+      for _j <- 0..(width - 1) do
+        Color.new(0, 0, 0)
+      end
+    end
   end
 end
