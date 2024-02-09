@@ -1,7 +1,16 @@
 defmodule RayTracerElixir.Matrix do
   defstruct [:width, :height, :map]
 
-  alias RayTracerElixir.Numbers
+  alias RayTracerElixir.{Numbers, Tuple}
+
+  def identity_matrix do
+    new([
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1]
+    ])
+  end
 
   def new(data) do
     map =
@@ -36,12 +45,33 @@ defmodule RayTracerElixir.Matrix do
     end
   end
 
-  def multiply(a, b) do
+  def multiply(a, b) when is_struct(b, __MODULE__) do
     iterate_matrix(a, fn row, col ->
       get(a, {row, 0}) * get(b, {0, col}) +
         get(a, {row, 1}) * get(b, {1, col}) +
         get(a, {row, 2}) * get(b, {2, col}) +
         get(a, {row, 3}) * get(b, {3, col})
+    end)
+    |> new()
+  end
+
+  def multiply(matrix, tuple) do
+    components = Tuple.to_components(tuple)
+
+    for row <- 0..(matrix.height - 1) do
+      components
+      |> Enum.with_index()
+      |> Enum.map(fn {component, index} ->
+        get(matrix, {row, index}) * component
+      end)
+      |> Enum.sum()
+    end
+    |> Tuple.new()
+  end
+
+  def transpose(matrix) do
+    iterate_matrix(matrix, fn row, col ->
+      get(matrix, {col, row})
     end)
     |> new()
   end
