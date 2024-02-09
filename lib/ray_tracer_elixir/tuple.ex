@@ -1,5 +1,5 @@
 defmodule RayTracerElixir.Tuple do
-  alias RayTracerElixir.Color
+  alias RayTracerElixir.{Color, Numbers}
 
   def new(red, green, blue) do
     %Color{red: red, green: green, blue: blue}
@@ -26,7 +26,7 @@ defmodule RayTracerElixir.Tuple do
   end
 
   def equal?(a, b) do
-    zip_components(a, b, fn c1, c2 -> close?(c1, c2) end) |> Enum.all?()
+    zip_components(a, b, fn c1, c2 -> Numbers.close?(c1, c2) end) |> Enum.all?()
   end
 
   def add(a, b) do
@@ -71,9 +71,5 @@ defmodule RayTracerElixir.Tuple do
 
   def zip_components(a, b, func) do
     Enum.zip_with(to_components(a), to_components(b), func)
-  end
-
-  defp close?(a, b) do
-    abs(a - b) < 0.00001
   end
 end

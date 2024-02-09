@@ -42,4 +42,71 @@ defmodule RayTracerElixir.MatrixTest do
     assert Matrix.get(m, {1, 1}) == -2
     assert Matrix.get(m, {2, 2}) == 1
   end
+
+  test "matrix equality with identical matrices" do
+    a =
+      Matrix.new([
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      ])
+
+    b =
+      Matrix.new([
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      ])
+
+    assert Matrix.equal?(a, b)
+  end
+
+  test "matrix equality with different matrices" do
+    a =
+      Matrix.new([
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      ])
+
+    b =
+      Matrix.new([
+        [2, 3, 4, 5],
+        [6, 7, 8, 9],
+        [8, 7, 6, 5],
+        [4, 3, 2, 1]
+      ])
+
+    refute Matrix.equal?(a, b)
+  end
+
+  test "multipying two matrices" do
+    a =
+      Matrix.new([
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      ])
+
+    b =
+      Matrix.new([
+        [-2, 1, 2, 3],
+        [3, 2, 1, -1],
+        [4, 3, 6, 5],
+        [1, 2, 7, 8]
+      ])
+
+    result = Matrix.multiply(a, b)
+
+    assert Matrix.to_lists(result) == [
+             [20, 22, 50, 48],
+             [44, 54, 114, 108],
+             [40, 58, 110, 102],
+             [16, 26, 46, 42]
+           ]
+  end
 end
