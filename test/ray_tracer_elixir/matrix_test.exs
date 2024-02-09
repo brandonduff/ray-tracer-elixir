@@ -165,4 +165,9 @@ defmodule RayTracerElixir.MatrixTest do
   test "transposing the identity matrix" do
     assert Matrix.identity_matrix() == Matrix.transpose(Matrix.identity_matrix())
   end
+
+  test "calculating the determinate of a 2x2 matrix" do
+    matrix = Matrix.new([[1, 5], [-3, 2]])
+    assert 17 == Matrix.determinate(matrix)
+  end
 end

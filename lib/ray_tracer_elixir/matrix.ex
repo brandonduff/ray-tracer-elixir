@@ -76,6 +76,10 @@ defmodule RayTracerElixir.Matrix do
     |> new()
   end
 
+  def determinate(matrix) do
+    get(matrix, {0, 0}) * get(matrix, {1, 1}) - get(matrix, {0, 1}) * get(matrix, {1, 0})
+  end
+
   def to_lists(matrix) do
     iterate_matrix(matrix, fn row, col -> get(matrix, {row, col}) end)
   end
