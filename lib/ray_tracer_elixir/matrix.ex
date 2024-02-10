@@ -31,8 +31,8 @@ defmodule RayTracerElixir.Matrix do
     %__MODULE__{width: width, height: height, map: map}
   end
 
-  def get(matrix, coordinates) do
-    Map.fetch!(matrix.map, coordinates)
+  def get(matrix, row, col) do
+    Map.fetch!(matrix.map, {row, col})
   end
 
   def equal?(a, b) do
@@ -40,7 +40,7 @@ defmodule RayTracerElixir.Matrix do
       false
     else
       iterate_matrix(a, fn i, j ->
-        {get(a, {i, j}), get(b, {i, j})}
+        {get(a, i, j), get(b, i, j)}
       end)
       |> List.flatten()
       |> Enum.all?(fn {a, b} -> Numbers.close?(a, b) end)
@@ -49,10 +49,10 @@ defmodule RayTracerElixir.Matrix do
 
   def multiply(a, b) when is_struct(b, __MODULE__) do
     iterate_matrix(a, fn row, col ->
-      get(a, {row, 0}) * get(b, {0, col}) +
-        get(a, {row, 1}) * get(b, {1, col}) +
-        get(a, {row, 2}) * get(b, {2, col}) +
-        get(a, {row, 3}) * get(b, {3, col})
+      get(a, row, 0) * get(b, 0, col) +
+        get(a, row, 1) * get(b, 1, col) +
+        get(a, row, 2) * get(b, 2, col) +
+        get(a, row, 3) * get(b, 3, col)
     end)
     |> new()
   end
@@ -64,7 +64,7 @@ defmodule RayTracerElixir.Matrix do
       components
       |> Enum.with_index()
       |> Enum.map(fn {component, index} ->
-        get(matrix, {row, index}) * component
+        get(matrix, row, index) * component
       end)
       |> Enum.sum()
     end
@@ -73,18 +73,18 @@ defmodule RayTracerElixir.Matrix do
 
   def transpose(matrix) do
     iterate_matrix(matrix, fn row, col ->
-      get(matrix, {col, row})
+      get(matrix, col, row)
     end)
     |> new()
   end
 
   def determinate(%{height: 2} = matrix) do
-    get(matrix, {0, 0}) * get(matrix, {1, 1}) - get(matrix, {0, 1}) * get(matrix, {1, 0})
+    get(matrix, 0, 0) * get(matrix, 1, 1) - get(matrix, 0, 1) * get(matrix, 1, 0)
   end
 
   def determinate(matrix) do
     for col <- 0..(matrix.width - 1) do
-      get(matrix, {0, col}) * cofactor(matrix, 0, col)
+      get(matrix, 0, col) * cofactor(matrix, 0, col)
     end
     |> Enum.sum()
   end
@@ -109,7 +109,7 @@ defmodule RayTracerElixir.Matrix do
   end
 
   def to_lists(matrix) do
-    iterate_matrix(matrix, fn row, col -> get(matrix, {row, col}) end)
+    iterate_matrix(matrix, fn row, col -> get(matrix, row, col) end)
   end
 
   defp reject_at_index(enum, index) do
