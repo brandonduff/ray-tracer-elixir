@@ -108,6 +108,21 @@ defmodule RayTracerElixir.Matrix do
     if Integer.is_even(row + col), do: minor, else: -minor
   end
 
+  def invertible?(matrix) do
+    determinate(matrix) != 0
+  end
+
+  def inverse(matrix) do
+    if !invertible?(matrix) do
+      throw("matrix not invertible")
+    end
+
+    iterate_matrix(matrix, fn col, row ->
+      cofactor(matrix, row, col) / determinate(matrix)
+    end)
+    |> new()
+  end
+
   def to_lists(matrix) do
     iterate_matrix(matrix, fn row, col -> get(matrix, row, col) end)
   end
