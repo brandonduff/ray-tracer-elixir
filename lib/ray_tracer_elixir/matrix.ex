@@ -1,4 +1,6 @@
 defmodule RayTracerElixir.Matrix do
+  require Integer
+
   defstruct [:width, :height, :map]
 
   alias RayTracerElixir.{Numbers, Tuple}
@@ -90,6 +92,17 @@ defmodule RayTracerElixir.Matrix do
     |> Enum.map(&reject_at_index(&1, col_to_delete))
     |> reject_at_index(row_to_delete)
     |> new()
+  end
+
+  def minor(matrix, row, col) do
+    matrix
+    |> submatrix(row, col)
+    |> determinate()
+  end
+
+  def cofactor(matrix, row, col) do
+    minor = minor(matrix, row, col)
+    if Integer.is_even(row + col), do: minor, else: -minor
   end
 
   defp reject_at_index(enum, index) do

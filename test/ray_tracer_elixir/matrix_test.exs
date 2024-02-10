@@ -171,33 +171,62 @@ defmodule RayTracerElixir.MatrixTest do
     assert 17 == Matrix.determinate(matrix)
   end
 
-  test "taking a submatrix of a 3x3 matrix creates a 2x2 matrix" do
-    matrix =
-      Matrix.new([
-        [1, 5, 0],
-        [-3, 2, 7],
-        [0, 6, -3]
-      ])
+  describe "submatrix" do
+    test "taking a submatrix of a 3x3 matrix creates a 2x2 matrix" do
+      matrix =
+        Matrix.new([
+          [1, 5, 0],
+          [-3, 2, 7],
+          [0, 6, -3]
+        ])
 
-    assert Matrix.equal?(Matrix.submatrix(matrix, 0, 2), Matrix.new([[-3, 2], [0, 6]]))
+      assert Matrix.equal?(Matrix.submatrix(matrix, 0, 2), Matrix.new([[-3, 2], [0, 6]]))
+    end
+
+    test "a submatrix of a 4x4 matrix is a 3x3 matrix" do
+      matrix =
+        Matrix.new([
+          [-6, 1, 1, 6],
+          [-8, 5, 8, 6],
+          [-1, 0, 8, 2],
+          [-7, 1, -1, 1]
+        ])
+
+      assert Matrix.equal?(
+               Matrix.submatrix(matrix, 2, 1),
+               Matrix.new([
+                 [-6, 1, 6],
+                 [-8, 8, 6],
+                 [-7, -1, 1]
+               ])
+             )
+    end
   end
 
-  test "a submatrix of a 4x4 matrix is a 3x3 matrix" do
+  test "calculating minor of a 3x3 matrix" do
     matrix =
       Matrix.new([
-        [-6, 1, 1, 6],
-        [-8, 5, 8, 6],
-        [-1, 0, 8, 2],
-        [-7, 1, -1, 1]
+        [3, 5, 0],
+        [2, -1, -7],
+        [6, -1, 5]
       ])
 
-    assert Matrix.equal?(
-             Matrix.submatrix(matrix, 2, 1),
-             Matrix.new([
-               [-6, 1, 6],
-               [-8, 8, 6],
-               [-7, -1, 1]
-             ])
-           )
+    submatrix = Matrix.submatrix(matrix, 1, 0)
+    assert Matrix.determinate(submatrix) == 25
+    assert Matrix.minor(matrix, 1, 0) == 25
+  end
+
+  test "calculating cofactor of a 3x3 matrix" do
+    matrix =
+      Matrix.new([
+        [3, 5, 0],
+        [2, -1, -7],
+        [6, -1, 5]
+      ])
+
+    assert Matrix.minor(matrix, 0, 0) == -12
+    assert Matrix.cofactor(matrix, 0, 0) == -12
+    assert Matrix.minor(matrix, 1, 0) == 25
+    assert Matrix.cofactor(matrix, 1, 0) == -25
   end
 end
