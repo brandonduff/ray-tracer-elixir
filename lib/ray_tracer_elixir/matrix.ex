@@ -78,12 +78,15 @@ defmodule RayTracerElixir.Matrix do
     |> new()
   end
 
-  def determinate(matrix) do
+  def determinate(%{height: 2} = matrix) do
     get(matrix, {0, 0}) * get(matrix, {1, 1}) - get(matrix, {0, 1}) * get(matrix, {1, 0})
   end
 
-  def to_lists(matrix) do
-    iterate_matrix(matrix, fn row, col -> get(matrix, {row, col}) end)
+  def determinate(matrix) do
+    for col <- 0..(matrix.width - 1) do
+      get(matrix, {0, col}) * cofactor(matrix, 0, col)
+    end
+    |> Enum.sum()
   end
 
   def submatrix(matrix, row_to_delete, col_to_delete) do
@@ -103,6 +106,10 @@ defmodule RayTracerElixir.Matrix do
   def cofactor(matrix, row, col) do
     minor = minor(matrix, row, col)
     if Integer.is_even(row + col), do: minor, else: -minor
+  end
+
+  def to_lists(matrix) do
+    iterate_matrix(matrix, fn row, col -> get(matrix, {row, col}) end)
   end
 
   defp reject_at_index(enum, index) do

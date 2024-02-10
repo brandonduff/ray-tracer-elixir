@@ -229,4 +229,18 @@ defmodule RayTracerElixir.MatrixTest do
     assert Matrix.minor(matrix, 1, 0) == 25
     assert Matrix.cofactor(matrix, 1, 0) == -25
   end
+
+  test "calculating the determinant of a 3x3 matrix" do
+    matrix =
+      Matrix.new([
+        [1, 2, 6],
+        [-5, 8, -4],
+        [2, 6, 4]
+      ])
+
+    assert Matrix.cofactor(matrix, 0, 0) == 56
+    assert Matrix.cofactor(matrix, 0, 1) == 12
+    assert Matrix.cofactor(matrix, 0, 2) == -46
+    assert Matrix.determinate(matrix) == -196
+  end
 end
