@@ -84,6 +84,21 @@ defmodule RayTracerElixir.Matrix do
     iterate_matrix(matrix, fn row, col -> get(matrix, {row, col}) end)
   end
 
+  def submatrix(matrix, row_to_delete, col_to_delete) do
+    matrix
+    |> to_lists()
+    |> Enum.map(&reject_at_index(&1, col_to_delete))
+    |> reject_at_index(row_to_delete)
+    |> new()
+  end
+
+  defp reject_at_index(enum, index) do
+    enum
+    |> Enum.with_index()
+    |> Enum.reject(fn {_val, col_index} -> col_index == index end)
+    |> Enum.map(&elem(&1, 0))
+  end
+
   defp iterate_matrix(matrix, func) do
     for row <- 0..(matrix.height - 1) do
       for col <- 0..(matrix.width - 1) do
