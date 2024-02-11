@@ -1,7 +1,7 @@
 defmodule RayTracerElixir.MatrixTest do
   use ExUnit.Case, async: true
 
-  alias RayTracerElixir.{Matrix, Tuple}
+  alias RayTracerElixir.{Matrix, Tuple, Point, Vector}
 
   test "constructing a 4x4 matrix" do
     data = [
@@ -358,6 +358,106 @@ defmodule RayTracerElixir.MatrixTest do
 
       c = Matrix.multiply(a, b)
       assert Matrix.equal?(Matrix.multiply(c, Matrix.inverse(b)), a)
+    end
+  end
+
+  describe "translation" do
+    test "multiplying by a translation matrix" do
+      transform = Matrix.translation(5, -3, 2)
+      p = Point.new(-3, 4, 5)
+      assert Matrix.multiply(transform, p) == Point.new(2, 1, 7)
+    end
+
+    test "multiplying by the inverse of a translation matrix" do
+      transform = Matrix.translation(5, -3, 2)
+      inv = Matrix.inverse(transform)
+      p = Point.new(-3, 4, 5)
+      assert Matrix.multiply(inv, p) == Point.new(-8, 7, 3)
+    end
+
+    test "translation does not affect vectors" do
+      transform = Matrix.translation(5, -3, 2)
+      v = Vector.new(-3, 4, 5)
+      assert Matrix.multiply(transform, v) == v
+    end
+  end
+
+  describe "scaling" do
+    test "a scaling matrix applied to a point" do
+      transform = Matrix.scaling(2, 3, 4)
+      p = Point.new(-4, 6, 8)
+      assert Matrix.multiply(transform, p) == Point.new(-8, 18, 32)
+    end
+
+    test "a scaling matrix applied to a vector" do
+      transform = Matrix.scaling(2, 3, 4)
+      v = Vector.new(-4, 6, 8)
+      assert Matrix.multiply(transform, v) == Vector.new(-8, 18, 32)
+    end
+
+    test "multiplying by the inverse of a scaling matrix" do
+      transform = Matrix.scaling(2, 3, 4)
+      inv = Matrix.inverse(transform)
+      v = Vector.new(-4, 6, 8)
+      assert Matrix.multiply(inv, v) == Vector.new(-2, 2, 2)
+    end
+
+    test "reflection is scaling by a negative value" do
+      transform = Matrix.scaling(-1, 1, 1)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(-2, 3, 4)
+    end
+  end
+
+  describe "rotation" do
+    test "rotating a point around the x axis" do
+      p = Point.new(0, 1, 0)
+      half_quarter = Matrix.rotation_x(:math.pi() / 4)
+      full_quarter = Matrix.rotation_x(:math.pi() / 2)
+
+      assert Tuple.equal?(
+               Matrix.multiply(half_quarter, p),
+               Point.new(0, :math.sqrt(2) / 2, :math.sqrt(2) / 2)
+             )
+
+      assert Tuple.equal?(Matrix.multiply(full_quarter, p), Point.new(0, 0, 1))
+    end
+
+    test "the inverse of an x-rotation rotates in the opposite direction" do
+      p = Point.new(0, 1, 0)
+      half_quarter = Matrix.rotation_x(:math.pi() / 4)
+      inv = Matrix.inverse(half_quarter)
+
+      assert Tuple.equal?(
+               Matrix.multiply(inv, p),
+               Point.new(0, :math.sqrt(2) / 2, -:math.sqrt(2) / 2)
+             )
+    end
+
+    test "rotating a point around the y axis" do
+      p = Point.new(0, 0, 1)
+      half_quarter = Matrix.rotation_y(:math.pi() / 4)
+      full_quarter = Matrix.rotation_y(:math.pi() / 2)
+
+      assert Tuple.equal?(
+               Matrix.multiply(half_quarter, p),
+               Point.new(:math.sqrt(2) / 2, 0, :math.sqrt(2) / 2)
+             )
+
+      assert Tuple.equal?(Matrix.multiply(full_quarter, p), Point.new(1, 0, 0))
+    end
+
+    test "rotating a point around the z axis" do
+      p = Point.new(0, 1, 0)
+      half_quarter = Matrix.rotation_z(:math.pi() / 4)
+      full_quarter = Matrix.rotation_z(:math.pi() / 2)
+
+      assert Tuple.equal?(
+               Matrix.multiply(half_quarter, p),
+               Point.new(-:math.sqrt(2) / 2, :math.sqrt(2) / 2, 0)
+             )
+
+      assert Tuple.equal?(Matrix.multiply(full_quarter, p), Point.new(-1, 0, 0))
     end
   end
 end

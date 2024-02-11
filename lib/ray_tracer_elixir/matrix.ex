@@ -14,6 +14,51 @@ defmodule RayTracerElixir.Matrix do
     ])
   end
 
+  def translation(x, y, z) do
+    new([
+      [1, 0, 0, x],
+      [0, 1, 0, y],
+      [0, 0, 1, z],
+      [0, 0, 0, 1]
+    ])
+  end
+
+  def scaling(x, y, z) do
+    new([
+      [x, 0, 0, 0],
+      [0, y, 0, 0],
+      [0, 0, z, 0],
+      [0, 0, 0, 1]
+    ])
+  end
+
+  def rotation_x(r) do
+    new([
+      [1, 0, 0, 0],
+      [0, :math.cos(r), -:math.sin(r), 0],
+      [0, :math.sin(r), :math.cos(r), 0],
+      [0, 0, 0, 1]
+    ])
+  end
+
+  def rotation_y(r) do
+    new([
+      [:math.cos(r), 0, :math.sin(r), 0],
+      [0, 1, 0, 0],
+      [-:math.sin(r), 0, :math.cos(r), 0],
+      [0, 0, 0, 1]
+    ])
+  end
+
+  def rotation_z(r) do
+    new([
+      [:math.cos(r), -:math.sin(r), 0, 0],
+      [:math.sin(r), :math.cos(r), 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1]
+    ])
+  end
+
   def new(data) do
     map =
       Stream.with_index(data)
