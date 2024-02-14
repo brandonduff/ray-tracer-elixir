@@ -59,6 +59,15 @@ defmodule RayTracerElixir.Matrix do
     ])
   end
 
+  def shearing(x_y, x_z, y_x, y_z, z_x, z_y) do
+    new([
+      [1, x_y, x_z, 0],
+      [y_x, 1, y_z, 0],
+      [z_x, z_y, 1, 0],
+      [0, 0, 0, 1]
+    ])
+  end
+
   def new(data) do
     map =
       Stream.with_index(data)

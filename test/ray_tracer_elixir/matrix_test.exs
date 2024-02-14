@@ -460,4 +460,42 @@ defmodule RayTracerElixir.MatrixTest do
       assert Tuple.equal?(Matrix.multiply(full_quarter, p), Point.new(-1, 0, 0))
     end
   end
+
+  describe "shearing" do
+    test "a shearing transformation moves x in proportion to y" do
+      transform = Matrix.shearing(1, 0, 0, 0, 0, 0)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(5, 3, 4)
+    end
+
+    test "a shearing transformation moves x in proportion to z" do
+      transform = Matrix.shearing(0, 1, 0, 0, 0, 0)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(6, 3, 4)
+    end
+
+    test "a shearing transformation moves y in proportion to x" do
+      transform = Matrix.shearing(0, 0, 1, 0, 0, 0)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(2, 5, 4)
+    end
+
+    test "a shearing transformation moves y in proportion to z" do
+      transform = Matrix.shearing(0, 0, 0, 1, 0, 0)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(2, 7, 4)
+    end
+
+    test "a shearing transformation moves z in proportion to x" do
+      transform = Matrix.shearing(0, 0, 0, 0, 1, 0)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(2, 3, 6)
+    end
+
+    test "a shearing transformation moves z in proportion to y" do
+      transform = Matrix.shearing(0, 0, 0, 0, 0, 1)
+      p = Point.new(2, 3, 4)
+      assert Matrix.multiply(transform, p) == Point.new(2, 3, 7)
+    end
+  end
 end
