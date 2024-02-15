@@ -498,4 +498,44 @@ defmodule RayTracerElixir.MatrixTest do
       assert Matrix.multiply(transform, p) == Point.new(2, 3, 7)
     end
   end
+
+  test "individual transformation are applied in sequence" do
+    p = Point.new(1, 0, 1)
+    a = Matrix.rotation_x(:math.pi() / 2)
+    b = Matrix.scaling(5, 5, 5)
+    c = Matrix.translation(10, 5, 7)
+
+    p2 = Matrix.multiply(a, p)
+    assert Tuple.equal?(p2, Point.new(1, -1, 0))
+
+    p3 = Matrix.multiply(b, p2)
+    assert Tuple.equal?(p3, Point.new(5, -5, 0))
+
+    p4 = Matrix.multiply(c, p3)
+    assert Tuple.equal?(p4, Point.new(15, 0, 7))
+  end
+
+  test "chained transformations must be applied in reverse order" do
+    p = Point.new(1, 0, 1)
+    a = Matrix.rotation_x(:math.pi() / 2)
+    b = Matrix.scaling(5, 5, 5)
+    c = Matrix.translation(10, 5, 7)
+    t = Matrix.multiply(c, Matrix.multiply(b, a))
+
+    assert Tuple.equal?(Matrix.multiply(t, p), Point.new(15, 0, 7))
+  end
+
+  # TODO: extract a def_transformation macro that creates the chaining
+  # function in terms of the 3-arity version and use that to define all
+  # transformations
+  test "fluent transformation interface" do
+    result =
+      Matrix.build_transformation()
+      |> Matrix.rotation_x(:math.pi() / 2)
+      |> Matrix.scaling(5, 5, 5)
+      |> Matrix.translation(10, 5, 7)
+      |> Matrix.multiply(Point.new(1, 0, 1))
+
+    assert Tuple.equal?(result, Point.new(15, 0, 7))
+  end
 end
