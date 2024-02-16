@@ -45,7 +45,7 @@ defmodule RayTracerElixir.Tuple do
     map_components(tuple, fn c -> c * scalar end)
   end
 
-  def multiply(c1, c2) when is_struct(c2) do
+  def multiply(c1, c2) when is_map(c2) do
     zip_components(c1, c2, &Kernel.*/2) |> new()
   end
 

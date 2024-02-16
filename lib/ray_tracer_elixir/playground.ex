@@ -1,5 +1,5 @@
 defmodule RayTracerElixir.Playground do
-  alias RayTracerElixir.{Tuple, Point, Vector, Canvas, Color, PPM}
+  alias RayTracerElixir.{Tuple, Point, Vector, Canvas, Color, PPM, Matrix}
 
   def tick(env, proj) do
     position = Tuple.add(proj.position, proj.velocity)
@@ -21,8 +21,22 @@ defmodule RayTracerElixir.Playground do
 
     c = Canvas.new(900, 550)
     c = plot_all(c, e, p)
-    ppm = PPM.write(c)
-    File.write!("projectile.ppm", ppm)
+    write_ppm(c, "prjectile.ppm")
+  end
+
+  def draw_clock() do
+    center = Matrix.multiply(Matrix.translation(100, 100, 0), Point.new(0, 0, 0))
+    noon = Point.new(0, 1, 0)
+
+    for i <- 1..12 do
+      Matrix.multiply([Matrix.rotation_z(i * :math.pi() / 6)], noon)
+      |> Tuple.multiply(Point.new(75, 75, 0))
+      |> Tuple.add(center)
+    end
+    |> Enum.reduce(Canvas.new(200, 200), fn point, c ->
+      Canvas.write_pixel(c, round(point.x), round(point.y), Color.new(255, 0, 0))
+    end)
+    |> write_ppm("clock.ppm")
   end
 
   def plot_all(canvas, env, projectile) do
@@ -38,5 +52,10 @@ defmodule RayTracerElixir.Playground do
 
   defp plot(canvas, x, y) do
     Canvas.write_pixel(canvas, round(x), canvas.height - round(y), Color.new(255, 0, 0))
+  end
+
+  defp write_ppm(canvas, filename) do
+    ppm = PPM.write(canvas)
+    File.write!(filename, ppm)
   end
 end
