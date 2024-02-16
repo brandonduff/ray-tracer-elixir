@@ -525,16 +525,14 @@ defmodule RayTracerElixir.MatrixTest do
     assert Tuple.equal?(Matrix.multiply(t, p), Point.new(15, 0, 7))
   end
 
-  # TODO: extract a def_transformation macro that creates the chaining
-  # function in terms of the 3-arity version and use that to define all
-  # transformations
-  test "fluent transformation interface" do
-    result =
-      Matrix.build_transformation()
-      |> Matrix.rotation_x(:math.pi() / 2)
-      |> Matrix.scaling(5, 5, 5)
-      |> Matrix.translation(10, 5, 7)
-      |> Matrix.multiply(Point.new(1, 0, 1))
+  test "chaining transformations in a list" do
+    transformations = [
+      Matrix.rotation_x(:math.pi() / 2),
+      Matrix.scaling(5, 5, 5),
+      Matrix.translation(10, 5, 7)
+    ]
+
+    result = Matrix.multiply(transformations, Point.new(1, 0, 1))
 
     assert Tuple.equal?(result, Point.new(15, 0, 7))
   end

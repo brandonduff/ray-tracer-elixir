@@ -14,10 +14,6 @@ defmodule RayTracerElixir.Matrix do
     ])
   end
 
-  def translation(transformations, x, y, z) do
-    [translation(x, y, z) | transformations]
-  end
-
   def translation(x, y, z) do
     new([
       [1, 0, 0, x],
@@ -25,10 +21,6 @@ defmodule RayTracerElixir.Matrix do
       [0, 0, 1, z],
       [0, 0, 0, 1]
     ])
-  end
-
-  def scaling(transformations, x, y, z) do
-    [scaling(x, y, z) | transformations]
   end
 
   def scaling(x, y, z) do
@@ -47,10 +39,6 @@ defmodule RayTracerElixir.Matrix do
       [0, :math.sin(r), :math.cos(r), 0],
       [0, 0, 0, 1]
     ])
-  end
-
-  def rotation_x(transformations, r) do
-    [rotation_x(r) | transformations]
   end
 
   def rotation_y(r) do
@@ -78,10 +66,6 @@ defmodule RayTracerElixir.Matrix do
       [z_x, z_y, 1, 0],
       [0, 0, 0, 1]
     ])
-  end
-
-  def build_transformation() do
-    []
   end
 
   def new(data) do
@@ -118,12 +102,7 @@ defmodule RayTracerElixir.Matrix do
   end
 
   def multiply(transformations, value) when is_list(transformations) do
-    transformations
-    |> Enum.reverse()
-    |> List.insert_at(0, value)
-    |> Enum.reduce(fn transform, acc ->
-      multiply(transform, acc)
-    end)
+    Enum.reduce([value | transformations], &multiply/2)
   end
 
   def multiply(a, b) when is_struct(b, __MODULE__) do
