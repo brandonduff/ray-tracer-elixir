@@ -1,6 +1,7 @@
 defmodule RayTracerElixir.SpheresTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Matrix
   alias RayTracerElixir.Sphere
   alias RayTracerElixir.Vector
   alias RayTracerElixir.Point
@@ -68,5 +69,39 @@ defmodule RayTracerElixir.SpheresTest do
     assert Enum.count(xs) == 2
     assert Enum.at(xs, 0).object == s
     assert Enum.at(xs, 1).object == s
+  end
+
+  test "a sphere's default transformation" do
+    s = Sphere.new()
+    assert s.transform == Matrix.identity_matrix()
+  end
+
+  test "changing a sphere's transformation" do
+    s = Sphere.new()
+    t = Matrix.translation(2, 3, 4)
+    s = Sphere.set_transform(s, t)
+    assert s.transform == t
+  end
+
+  test "intersecting a scaled sphere with a ray" do
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    s = Sphere.new()
+
+    s = Sphere.set_transform(s, Matrix.scaling(2, 2, 2))
+    xs = Sphere.intersect(s, r)
+
+    assert Enum.count(xs) == 2
+    assert Enum.at(xs, 0).t == 3
+    assert Enum.at(xs, 1).t == 7
+  end
+
+  test "intersecting a translated sphere with a ray" do
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    s = Sphere.new()
+
+    s = Sphere.set_transform(s, Matrix.translation(5, 0, 0))
+    xs = Sphere.intersect(s, r)
+
+    assert Enum.count(xs) == 0
   end
 end

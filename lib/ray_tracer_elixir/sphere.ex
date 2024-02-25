@@ -1,14 +1,17 @@
 defmodule RayTracerElixir.Sphere do
+  alias RayTracerElixir.Ray
+  alias RayTracerElixir.Matrix
   alias RayTracerElixir.Intersection
   alias RayTracerElixir.Vector
   alias RayTracerElixir.Point
   alias RayTracerElixir.Tuple
 
   def new() do
-    %{}
+    %{transform: Matrix.identity_matrix()}
   end
 
   def intersect(sphere, ray) do
+    ray = Ray.transform(ray, Matrix.inverse(sphere.transform))
     sphere_to_ray = Tuple.subtract(ray.origin, Point.new(0, 0, 0))
 
     a = Vector.dot(ray.direction, ray.direction)
@@ -25,5 +28,9 @@ defmodule RayTracerElixir.Sphere do
     else
       []
     end
+  end
+
+  def set_transform(sphere, transform) do
+    Map.put(sphere, :transform, transform)
   end
 end
