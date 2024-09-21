@@ -15,40 +15,50 @@ defmodule RayTracerElixir.PPM do
   end
 
   def lines(ppm_string) do
-    String.split(ppm_string, "\n")
+    ppm_string |> IO.iodata_to_binary() |> String.split("\n")
   end
 
   def ensure_line_limit(lines, limit) do
-    Enum.map(lines, &split_line_at_limit(&1, limit))
-    |> List.flatten()
+    Enum.chunk_while(
+      lines,
+      %{current_line: [], current_length: 0},
+      fn element, acc ->
+        if IO.iodata_length(element) + acc.current_length >= limit do
+          {:cont, [acc.current_line | ["\n"]],
+           %{current_line: [element], current_length: IO.iodata_length(element)}}
+        else
+          {:cont, collect_element(acc, element)}
+        end
+      end,
+      fn acc -> {:cont, [acc.current_line], acc} end
+    )
   end
 
-  defp split_line_at_limit(line, limit) do
-    values = String.split(line)
+  defp collect_element(%{current_length: 0, current_line: current_line}, element) do
+    %{
+      current_line: [current_line | [element]],
+      current_length: IO.iodata_length(element)
+    }
+  end
 
-    Enum.reduce(values, [[]], fn value, [current_line | lines] ->
-      number_of_spaces = length(current_line) - 1
-      character_count = Enum.map(current_line, &String.length/1) |> Enum.sum()
-
-      if number_of_spaces + character_count + String.length(value) < limit do
-        [current_line ++ [value] | lines]
-      else
-        [[value] | [current_line | lines]]
-      end
-    end) |> Enum.reverse() |> Enum.map(&Enum.join(&1, " "))
+  defp collect_element(acc, element) do
+    %{
+      current_line: [acc.current_line | [" ", element]],
+      current_length: IO.iodata_length(element) + acc.current_length + 1
+    }
   end
 
   defp print_line(pixels) do
     pixels
     |> Enum.map(&Color.scale(&1, @scale))
-    |> Enum.map(fn pixel -> "#{pixel.red} #{pixel.green} #{pixel.blue}" end)
-    |> Enum.join(" ")
+    |> Enum.flat_map(fn pixel ->
+      [to_string(pixel.red), to_string(pixel.green), to_string(pixel.blue)]
+    end)
   end
 
   defp print_lines(pixel_grid) do
     pixel_grid
-    |> Enum.map(&print_line/1)
+    |> Enum.flat_map(&print_line/1)
     |> ensure_line_limit(70)
-    |> Enum.join("\n")
   end
 end

@@ -50,6 +50,15 @@ defmodule RayTracerElixir.Playground do
     end
   end
 
+  # def draw_sphere_shadow() do
+  #   ray_origin = Point.new(0, 0, -5)
+  #   wall_z = 10
+  #   wall_size = 7.0
+  #   canvas_pixels = 100
+  #   pizel_size = wall_size / canvas_pixels
+  #   half = wall_size / 2
+  # end
+
   defp plot(canvas, x, y) do
     Canvas.write_pixel(canvas, round(x), canvas.height - round(y), Color.new(255, 0, 0))
   end

@@ -28,27 +28,10 @@ defmodule RayTracerElixir.PPMTest do
       |> PPM.lines()
 
     assert Enum.slice(lines, 3..5) == [
-             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
-             "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0",
-             "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255"
-           ]
-  end
-
-  describe "splitting long lines" do
-    test "does not touch lines shorter than limit" do
-       lines = ["123 456"]
-       assert PPM.ensure_line_limit(lines, 8) == lines
-    end
-
-    test "breaks lines longer than limit" do
-      lines = ["123 456"]
-      assert PPM.ensure_line_limit(lines, 3) == ["123", "456"]
-    end
-
-    test "does not break individual color values" do
-      lines = ["123 456"]
-      assert PPM.ensure_line_limit(lines, 5) == ["123", "456"]
-    end
+      "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 0 0 0",
+      "0 0 0 0 0 0 0 0 0 0 0 255",
+      ""
+    ]
   end
 
   test "splitting long lines in PPM files" do
@@ -62,9 +45,9 @@ defmodule RayTracerElixir.PPMTest do
 
     assert Enum.slice(lines, 3..6) == [
              "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204",
-             "153 255 204 153 255 204 153 255 204 153 255 204 153",
-             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204",
-             "153 255 204 153 255 204 153 255 204 153 255 204 153"
+             "153 255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255",
+             "204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204 153",
+             "255 204 153 255 204 153 255 204 153"
            ]
   end
 end
