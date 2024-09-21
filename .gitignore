@@ -26,3 +26,6 @@ ray_tracer_elixir-*.tar
 /tmp/
 
 .idea
+
+projectile.ppm
+clock.ppm

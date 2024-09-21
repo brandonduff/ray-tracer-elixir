@@ -21,7 +21,7 @@ defmodule RayTracerElixir.Playground do
 
     c = Canvas.new(900, 550)
     c = plot_all(c, e, p)
-    write_ppm(c, "prjectile.ppm")
+    write_ppm(c, "projectile.ppm")
   end
 
   def draw_clock() do
