@@ -30,8 +30,30 @@ defmodule RayTracerElixir.Sphere do
     end
   end
 
-  def normal_at(_sphere, point) do
-    Vector.normalize(Tuple.subtract(point, Point.new(0, 0, 0)))
+  def normal_at(sphere, world_point) do
+    sphere
+    |> world_normal(object_normal(sphere, world_point))
+    |> Vector.normalize()
+  end
+
+  defp object_normal(sphere, world_point) do
+    sphere
+    |> object_point(world_point)
+    |> Tuple.subtract(Point.new(0, 0, 0))
+  end
+
+  defp object_point(sphere, world_point) do
+    sphere.transform
+    |> Matrix.inverse()
+    |> Matrix.multiply(world_point)
+  end
+
+  defp world_normal(sphere, object_normal) do
+    sphere.transform
+    |> Matrix.inverse()
+    |> Matrix.transpose()
+    |> Matrix.multiply(object_normal)
+    |> Map.put(:w, 0)
   end
 
   def set_transform(sphere, transform) do

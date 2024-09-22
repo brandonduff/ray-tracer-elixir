@@ -136,5 +136,24 @@ defmodule RayTracerElixir.SphereTest do
       n = Sphere.normal_at(s, Point.new(:math.sqrt(3) / 3, :math.sqrt(3) / 3, :math.sqrt(3) / 3))
       assert Tuple.equal?(n, Vector.normalize(n))
     end
+
+    test "Computing the normal on a translated sphere" do
+      s =
+        Sphere.new()
+        |> Sphere.set_transform(Matrix.translation(0, 1, 0))
+
+      n = Sphere.normal_at(s, Point.new(0, 1.70711, -0.70711))
+
+      assert Tuple.equal?(n, Vector.new(0, 0.70711, -0.70711))
+    end
+
+    test "Computing the normal on a transformed sphere" do
+      m = Matrix.scaling(1, 0.5, 1) |> Matrix.multiply(Matrix.rotation_z(:math.pi() / 5))
+      s = Sphere.set_transform(Sphere.new(), m)
+
+      n = Sphere.normal_at(s, Point.new(0, :math.sqrt(2) / 2, -:math.sqrt(2) / 2))
+
+      assert Tuple.equal?(n, Vector.new(0, 0.97014, -0.24254))
+    end
   end
 end
