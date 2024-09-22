@@ -1,4 +1,4 @@
-defmodule RayTracerElixir.SpheresTest do
+defmodule RayTracerElixir.SphereTest do
   use ExUnit.Case, async: true
 
   alias RayTracerElixir.Matrix
