@@ -30,6 +30,10 @@ defmodule RayTracerElixir.Sphere do
     end
   end
 
+  def normal_at(_sphere, point) do
+    Vector.normalize(Tuple.subtract(point, Point.new(0, 0, 0)))
+  end
+
   def set_transform(sphere, transform) do
     Map.put(sphere, :transform, transform)
   end

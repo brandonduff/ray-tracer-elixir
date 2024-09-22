@@ -6,6 +6,7 @@ defmodule RayTracerElixir.SphereTest do
   alias RayTracerElixir.Vector
   alias RayTracerElixir.Point
   alias RayTracerElixir.Ray
+  alias RayTracerElixir.Tuple
 
   test "a ray intersects a sphere at two points" do
     r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
@@ -103,5 +104,37 @@ defmodule RayTracerElixir.SphereTest do
     xs = Sphere.intersect(s, r)
 
     assert Enum.count(xs) == 0
+  end
+
+  describe "normal" do
+    test "The normal on a sphere at a point on the x axis" do
+      s = Sphere.new()
+      n = Sphere.normal_at(s, Point.new(1, 0, 0))
+      assert Tuple.equal?(n, Vector.new(1, 0, 0))
+    end
+
+    test "The normal on a sphere at a point on the y axis" do
+      s = Sphere.new()
+      n = Sphere.normal_at(s, Point.new(0, 1, 0))
+      assert Tuple.equal?(n, Vector.new(0, 1, 0))
+    end
+
+    test "The normal on a sphere at a point on the z axis" do
+      s = Sphere.new()
+      n = Sphere.normal_at(s, Point.new(0, 0, 1))
+      assert Tuple.equal?(n, Vector.new(0, 0, 1))
+    end
+
+    test "The normal on a sphere on a nonaxial point" do
+      s = Sphere.new()
+      n = Sphere.normal_at(s, Point.new(:math.sqrt(3) / 3, :math.sqrt(3) / 3, :math.sqrt(3) / 3))
+      assert Tuple.equal?(n, Vector.new(:math.sqrt(3) / 3, :math.sqrt(3) / 3, :math.sqrt(3) / 3))
+    end
+
+    test "The normal is a normalized vector" do
+      s = Sphere.new()
+      n = Sphere.normal_at(s, Point.new(:math.sqrt(3) / 3, :math.sqrt(3) / 3, :math.sqrt(3) / 3))
+      assert Tuple.equal?(n, Vector.normalize(n))
+    end
   end
 end
