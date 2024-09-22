@@ -30,4 +30,8 @@ defmodule RayTracerElixir.Vector do
       a.x * b.y - a.y * b.x
     )
   end
+
+  def reflect(input, normal) do
+    Tuple.subtract(input, Tuple.multiply(normal, dot(input, normal) * 2))
+  end
 end

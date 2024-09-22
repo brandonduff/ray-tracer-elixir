@@ -132,4 +132,22 @@ defmodule RayTracerElixir.TupleTest do
     assert Tuple.equal?(Vector.cross(a, b), Vector.new(-1, 2, -1))
     assert Tuple.equal?(Vector.cross(b, a), Vector.new(1, -2, 1))
   end
+
+  test "Reflecting a vector approaching at 45°" do
+    v = Vector.new(1, -1, 0)
+    n = Vector.new(0, 1, 0)
+
+    r = Vector.reflect(v, n)
+
+    assert Tuple.equal?(r, Vector.new(1, 1, 0))
+  end
+
+  test "Reflecting a vector off a slanted surface" do
+    v = Vector.new(0, -1, 0)
+    n = Vector.new(:math.sqrt(2) / 2, :math.sqrt(2) / 2, 0)
+
+    r = Vector.reflect(v, n)
+
+    assert Tuple.equal?(r, Vector.new(1, 0, 0))
+  end
 end
