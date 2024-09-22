@@ -1,4 +1,6 @@
 defmodule RayTracerElixir.Playground do
+  alias RayTracerElixir.Light
+  alias RayTracerElixir.Material
   alias RayTracerElixir.Intersection
   alias RayTracerElixir.Ray
   alias RayTracerElixir.Sphere
@@ -85,6 +87,55 @@ defmodule RayTracerElixir.Playground do
         c
     end)
     |> write_ppm("sphere_shadow.ppm")
+  end
+
+  def draw_sphere() do
+    ray_origin = Point.new(0, 0, -5)
+    wall_z = 10
+    wall_size = 7.0
+    canvas_pixels = 300
+    pixel_size = wall_size / canvas_pixels
+    half = wall_size / 2
+
+    canvas = Canvas.new(canvas_pixels, canvas_pixels)
+    shape = Sphere.new()
+    shape = put_in(shape.material, Material.new())
+    shape = put_in(shape.material.color, Color.new(1, 0.2, 1))
+
+    light_position = Point.new(5, 5, -10)
+    light_color = Color.new(1, 1, 1)
+    light = Light.point_light(light_position, light_color)
+
+    for y <- 0..(canvas_pixels - 1), x <- 0..(canvas_pixels - 1) do
+      {x, y}
+    end
+    |> Task.async_stream(
+      fn {x, y} ->
+        world_y = half - pixel_size * y
+        world_x = -half + pixel_size * x
+        position = Point.new(world_x, world_y, wall_z)
+
+        r = Ray.new(ray_origin, Vector.normalize(Tuple.subtract(position, ray_origin)))
+        xs = Sphere.intersect(shape, r)
+
+        if hit = Intersection.hit(xs) do
+          point = Ray.position(r, hit.t)
+          normal = Sphere.normal_at(hit.object, point)
+          eye = Tuple.negate(r.direction)
+          color = Material.lighting(hit.object.material, light, point, eye, normal)
+          {x, y, color}
+        end
+      end,
+      ordered: false
+    )
+    |> Enum.reduce(canvas, fn
+      {:ok, {x, y, color}}, c ->
+        Canvas.write_pixel(c, x, y, color)
+
+      {:ok, nil}, c ->
+        c
+    end)
+    |> write_ppm("sphere.ppm")
   end
 
   defp plot(canvas, x, y) do

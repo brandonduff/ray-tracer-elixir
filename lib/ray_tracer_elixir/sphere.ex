@@ -1,4 +1,5 @@
 defmodule RayTracerElixir.Sphere do
+  alias RayTracerElixir.Material
   alias RayTracerElixir.Ray
   alias RayTracerElixir.Matrix
   alias RayTracerElixir.Intersection
@@ -7,7 +8,7 @@ defmodule RayTracerElixir.Sphere do
   alias RayTracerElixir.Tuple
 
   def new() do
-    %{transform: Matrix.identity_matrix()}
+    %{transform: Matrix.identity_matrix(), material: Material.new()}
   end
 
   def intersect(sphere, ray) do

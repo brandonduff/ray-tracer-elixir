@@ -1,6 +1,7 @@
 defmodule RayTracerElixir.SphereTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Material
   alias RayTracerElixir.Matrix
   alias RayTracerElixir.Sphere
   alias RayTracerElixir.Vector
@@ -155,5 +156,21 @@ defmodule RayTracerElixir.SphereTest do
 
       assert Tuple.equal?(n, Vector.new(0, 0.97014, -0.24254))
     end
+  end
+
+  test "A sphere has a default material" do
+    s = Sphere.new()
+    m = s.material
+    assert m == Material.new()
+  end
+
+  test "A sphere may be assigned a material" do
+    s = Sphere.new()
+    m = Material.new()
+    m = %{m | ambient: 1}
+
+    s = %{s | material: m}
+
+    assert s.material == m
   end
 end
