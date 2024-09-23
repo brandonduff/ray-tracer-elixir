@@ -14,34 +14,54 @@ defmodule RayTracerElixir.Material do
   end
 
   def lighting(material, light, point, eyev, normalv) do
-    effective_color = Tuple.multiply(material.color, light.intensity)
-    lightv = Vector.normalize(Tuple.subtract(light.position, point))
-    ambient = Tuple.multiply(effective_color, material.ambient)
+    result = %{material: material, light: light, normalv: normalv, eyev: eyev}
 
-    light_dot_normal = Vector.dot(lightv, normalv)
+    result =
+      Map.put(result, :effective_color, Tuple.multiply(material.color, light.intensity))
+      |> Map.put(:lightv, Vector.normalize(Tuple.subtract(light.position, point)))
 
-    {diffuse, specular} =
-      if light_dot_normal < 0 do
-        {Color.new(0, 0, 0), Color.new(0, 0, 0)}
+    result = Map.put(result, :ambient, Tuple.multiply(result.effective_color, material.ambient))
+    result = Map.put(result, :light_dot_normal, Vector.dot(result.lightv, normalv))
+
+    result = result |> calculate_diffuse() |> calculate_specular()
+
+    result.ambient |> Tuple.add(result.diffuse) |> Tuple.add(result.specular)
+  end
+
+  defp calculate_diffuse(%{light_dot_normal: light_dot_normal} = result)
+       when light_dot_normal < 0 do
+    Map.put(result, :diffuse, Color.new(0, 0, 0))
+  end
+
+  defp calculate_diffuse(result) do
+    diffuse =
+      result.effective_color
+      |> Tuple.multiply(result.material.diffuse)
+      |> Tuple.multiply(result.light_dot_normal)
+
+    Map.put(result, :diffuse, diffuse)
+  end
+
+  defp calculate_specular(%{light_dot_normal: light_dot_normal} = result)
+       when light_dot_normal < 0 do
+    Map.put(result, :specular, Color.new(0, 0, 0))
+  end
+
+  defp calculate_specular(result) do
+    reflectv = Vector.reflect(Tuple.negate(result.lightv), result.normalv)
+    reflect_dot_eye = Vector.dot(reflectv, result.eyev)
+
+    specular =
+      if reflect_dot_eye <= 0 do
+        Color.new(0, 0, 0)
       else
-        diffuse =
-          effective_color |> Tuple.multiply(material.diffuse) |> Tuple.multiply(light_dot_normal)
+        factor = :math.pow(reflect_dot_eye, result.material.shininess)
 
-        reflectv = Vector.reflect(Tuple.negate(lightv), normalv)
-        reflect_dot_eye = Vector.dot(reflectv, eyev)
-
-        specular =
-          if reflect_dot_eye <= 0 do
-            Color.new(0, 0, 0)
-          else
-            factor = :math.pow(reflect_dot_eye, material.shininess)
-
-            light.intensity |> Tuple.multiply(material.specular) |> Tuple.multiply(factor)
-          end
-
-        {diffuse, specular}
+        result.light.intensity
+        |> Tuple.multiply(result.material.specular)
+        |> Tuple.multiply(factor)
       end
 
-    ambient |> Tuple.add(diffuse) |> Tuple.add(specular)
+    Map.put(result, :specular, specular)
   end
 end
