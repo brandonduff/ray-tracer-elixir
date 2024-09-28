@@ -1,6 +1,8 @@
 defmodule RayTracerElixir.WorldTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Vector
+  alias RayTracerElixir.Ray
   alias RayTracerElixir.Matrix
   alias RayTracerElixir.Material
   alias RayTracerElixir.Sphere
@@ -35,5 +37,15 @@ defmodule RayTracerElixir.WorldTest do
     assert w.light_source == light
     assert Enum.member?(w.objects, s1)
     assert Enum.member?(w.objects, s2)
+  end
+
+  test "Intersect a world with a ray" do
+    w = World.default()
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+
+    xs = World.intersect(w, r)
+
+    assert Enum.count(xs) == 4
+    assert Enum.map(xs, fn x -> x.t end) == [4, 4.5, 5.5, 6]
   end
 end

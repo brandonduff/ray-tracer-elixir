@@ -25,4 +25,11 @@ defmodule RayTracerElixir.World do
     s2 = Sphere.new(transform: Matrix.scaling(0.5, 0.5, 0.5))
     Map.put(result, :objects, [s1, s2])
   end
+
+  def intersect(world, ray) do
+    Enum.flat_map(world.objects, fn object ->
+      Sphere.intersect(object, ray)
+    end)
+    |> Enum.sort_by(fn intersection -> intersection.t end)
+  end
 end
