@@ -7,8 +7,9 @@ defmodule RayTracerElixir.Sphere do
   alias RayTracerElixir.Point
   alias RayTracerElixir.Tuple
 
-  def new() do
+  def new(opts \\ []) do
     %{transform: Matrix.identity_matrix(), material: Material.new()}
+    |> Map.merge(Map.new(opts))
   end
 
   def intersect(sphere, ray) do
