@@ -32,4 +32,14 @@ defmodule RayTracerElixir.World do
     end)
     |> Enum.sort_by(fn intersection -> intersection.t end)
   end
+
+  def shade_hit(world, comps) do
+    Material.lighting(
+      comps.object.material,
+      world.light_source,
+      comps.point,
+      comps.eyev,
+      comps.normalv
+    )
+  end
 end

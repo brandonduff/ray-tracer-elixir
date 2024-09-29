@@ -1,6 +1,8 @@
 defmodule RayTracerElixir.WorldTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Tuple
+  alias RayTracerElixir.Intersection
   alias RayTracerElixir.Vector
   alias RayTracerElixir.Ray
   alias RayTracerElixir.Matrix
@@ -47,5 +49,29 @@ defmodule RayTracerElixir.WorldTest do
 
     assert Enum.count(xs) == 4
     assert Enum.map(xs, fn x -> x.t end) == [4, 4.5, 5.5, 6]
+  end
+
+  test "Shading an intersection" do
+    w = World.default()
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    shape = hd(w.objects)
+    i = Intersection.new(4, shape)
+
+    comps = Intersection.prepare_computations(i, r)
+    c = World.shade_hit(w, comps)
+
+    assert Tuple.equal?(c, Color.new(0.38066, 0.47583, 0.2855))
+  end
+
+  test "Shading an intersection from the inside" do
+    w = %{World.default() | light_source: Light.point_light(Point.new(0, 0.25, 0), Color.new(1, 1, 1))}
+    r = Ray.new(Point.new(0, 0, 0), Vector.new(0, 0, 1))
+    shape = Enum.at(w.objects, 1)
+    i = Intersection.new(0.5, shape)
+
+    comps = Intersection.prepare_computations(i, r)
+    c = World.shade_hit(w, comps)
+
+    assert Tuple.equal?(c, Color.new(0.90498, 0.90498, 0.90498))
   end
 end
