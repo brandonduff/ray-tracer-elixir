@@ -87,5 +87,26 @@ defmodule RayTracerElixir.IntersectionTest do
     assert comps.normalv == Vector.new(0, 0, -1)
   end
 
+  test "The hit, when an intersection occurs on the outside" do
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    shape = Sphere.new()
+    i = Intersection.new(4, shape)
 
+    comps = Intersection.prepare_computations(i, r)
+
+    refute comps.inside
+  end
+
+  test "The hit, when an intersection occurs on the inside" do
+    r = Ray.new(Point.new(0, 0, 0), Vector.new(0, 0, 1))
+    shape = Sphere.new()
+    i = Intersection.new(1, shape)
+
+    comps = Intersection.prepare_computations(i, r)
+
+    assert comps.point == Point.new(0, 0, 1)
+    assert comps.eyev == Vector.new(0, 0, -1)
+    assert comps.inside
+    assert comps.normalv == Vector.new(0, 0, -1)
+  end
 end

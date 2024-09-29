@@ -1,4 +1,5 @@
 defmodule RayTracerElixir.Intersection do
+  alias RayTracerElixir.Vector
   alias RayTracerElixir.Sphere
   alias RayTracerElixir.Tuple
   alias RayTracerElixir.Ray
@@ -29,9 +30,24 @@ defmodule RayTracerElixir.Intersection do
       object: intersection.object,
       point: Ray.position(ray, intersection.t),
       eyev: Tuple.negate(ray.direction),
+      inside: nil,
       normalv: nil
     }
 
+    result
+    |> compute_normalv()
+    |> compute_inside()
+  end
+
+  defp compute_normalv(result) do
     %{result | normalv: Sphere.normal_at(result.object, result.point)}
+  end
+
+  defp compute_inside(comps) do
+    if Vector.dot(comps.normalv, comps.eyev) < 0 do
+      %{comps | inside: true, normalv: Tuple.negate(comps.normalv)}
+    else
+      %{comps | inside: false}
+    end
   end
 end
