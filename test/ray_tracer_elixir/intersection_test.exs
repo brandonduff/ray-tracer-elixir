@@ -1,6 +1,9 @@
 defmodule RayTracerElixir.IntersectionTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Ray
+  alias RayTracerElixir.Vector
+  alias RayTracerElixir.Point
   alias RayTracerElixir.Sphere
   alias RayTracerElixir.Intersection
 
@@ -69,4 +72,20 @@ defmodule RayTracerElixir.IntersectionTest do
 
     assert i == i4
   end
+
+  test "Precomputing the state of an intersection" do
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    shape = Sphere.new()
+    i = Intersection.new(4, shape)
+
+    comps = Intersection.prepare_computations(i, r)
+
+    assert comps.t == i.t
+    assert comps.object == i.object
+    assert comps.point == Point.new(0, 0, -1)
+    assert comps.eyev == Vector.new(0, 0, -1)
+    assert comps.normalv == Vector.new(0, 0, -1)
+  end
+
+
 end

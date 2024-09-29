@@ -1,4 +1,8 @@
 defmodule RayTracerElixir.Intersection do
+  alias RayTracerElixir.Sphere
+  alias RayTracerElixir.Tuple
+  alias RayTracerElixir.Ray
+
   defstruct [:t, :object]
 
   def new(t, object) do
@@ -17,5 +21,17 @@ defmodule RayTracerElixir.Intersection do
     intersections
     |> Enum.filter(fn intersection -> intersection.t > 0 end)
     |> Enum.min_by(fn intersection -> intersection.t end, fn -> nil end)
+  end
+
+  def prepare_computations(intersection, ray) do
+    result = %{
+      t: intersection.t,
+      object: intersection.object,
+      point: Ray.position(ray, intersection.t),
+      eyev: Tuple.negate(ray.direction),
+      normalv: nil
+    }
+
+    %{result | normalv: Sphere.normal_at(result.object, result.point)}
   end
 end
