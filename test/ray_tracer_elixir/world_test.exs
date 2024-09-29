@@ -64,7 +64,11 @@ defmodule RayTracerElixir.WorldTest do
   end
 
   test "Shading an intersection from the inside" do
-    w = %{World.default() | light_source: Light.point_light(Point.new(0, 0.25, 0), Color.new(1, 1, 1))}
+    w = %{
+      World.default()
+      | light_source: Light.point_light(Point.new(0, 0.25, 0), Color.new(1, 1, 1))
+    }
+
     r = Ray.new(Point.new(0, 0, 0), Vector.new(0, 0, 1))
     shape = Enum.at(w.objects, 1)
     i = Intersection.new(0.5, shape)
@@ -73,5 +77,35 @@ defmodule RayTracerElixir.WorldTest do
     c = World.shade_hit(w, comps)
 
     assert Tuple.equal?(c, Color.new(0.90498, 0.90498, 0.90498))
+  end
+
+  test "The color when a ray misses" do
+    w = World.default()
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 1, 0))
+
+    c = World.color_at(w, r)
+
+    assert Tuple.equal?(c, Color.new(0, 0, 0))
+  end
+
+  test "The color when a ray hits" do
+    w = World.default()
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+
+    c = World.color_at(w, r)
+
+    assert Tuple.equal?(c, Color.new(0.38066, 0.47583, 0.2855))
+  end
+
+  test "The color with an intersection behind the ray" do
+    w =
+      World.default()
+      |> put_in([:objects, Access.at(0), :material, :ambient], 1)
+      |> put_in([:objects, Access.at(1), :material, :ambient], 1)
+
+    r = Ray.new(Point.new(0, 0, 0.75), Vector.new(0, 0, -1))
+
+    c = World.color_at(w, r)
+    assert Tuple.equal?(c, get_in(w, [:objects, Access.at(1), :material, :color]))
   end
 end

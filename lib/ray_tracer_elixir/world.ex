@@ -1,4 +1,5 @@
 defmodule RayTracerElixir.World do
+  alias RayTracerElixir.Intersection
   alias RayTracerElixir.Material
   alias RayTracerElixir.Matrix
   alias RayTracerElixir.Sphere
@@ -41,5 +42,14 @@ defmodule RayTracerElixir.World do
       comps.eyev,
       comps.normalv
     )
+  end
+
+  def color_at(world, ray) do
+    if hit = Intersection.hit(intersect(world, ray)) do
+      comps = Intersection.prepare_computations(hit, ray)
+      shade_hit(world, comps)
+    else
+      Color.new(0, 0, 0)
+    end
   end
 end
