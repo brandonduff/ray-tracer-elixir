@@ -27,6 +27,8 @@ ray_tracer_elixir-*.tar
 
 .idea
 
+.DS_Store
+
 projectile.ppm
 clock.ppm
 sphere_shadow.ppm
