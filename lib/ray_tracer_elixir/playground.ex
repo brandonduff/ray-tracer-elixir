@@ -1,4 +1,7 @@
 defmodule RayTracerElixir.Playground do
+  alias RayTracerElixir.Transformation
+  alias RayTracerElixir.Camera
+  alias RayTracerElixir.World
   alias RayTracerElixir.Light
   alias RayTracerElixir.Material
   alias RayTracerElixir.Intersection
@@ -136,6 +139,94 @@ defmodule RayTracerElixir.Playground do
         c
     end)
     |> write_ppm("sphere.ppm")
+  end
+
+  def draw_simple_scene do
+    floor =
+      Sphere.new()
+      |> Map.put(:transform, Matrix.scaling(10, 0.01, 10))
+      |> Map.put(:material, Material.new())
+      |> put_in([:material, :color], Color.new(1, 0.9, 0.9))
+      |> put_in([:material, :specular], 0)
+
+    left_wall =
+      Sphere.new()
+      |> Map.put(
+        :transform,
+        Matrix.multiply(
+          Matrix.translation(0, 0, 5),
+          Matrix.multiply(
+            Matrix.rotation_y(-:math.pi() / 4),
+            Matrix.multiply(Matrix.rotation_x(:math.pi() / 2), Matrix.scaling(10, 0.01, 10))
+          )
+        )
+      )
+      |> Map.put(:material, floor.material)
+
+    right_wall =
+      Sphere.new()
+      |> Map.put(
+        :transform,
+        Matrix.multiply(
+          Matrix.translation(0, 0, 5),
+          Matrix.multiply(
+            Matrix.rotation_y(:math.pi() / 4),
+            Matrix.multiply(Matrix.rotation_x(:math.pi() / 2), Matrix.scaling(10, 0.01, 10))
+          )
+        )
+      )
+      |> Map.put(:material, floor.material)
+
+    middle =
+      Sphere.new()
+      |> Map.put(:transform, Matrix.translation(-0.5, 1, 0.5))
+      |> Map.put(:material, Material.new())
+      |> put_in([:material, :color], Color.new(0.1, 1, 0.5))
+      |> put_in([:material, :diffuse], 0.7)
+      |> put_in([:material, :specular], 0.3)
+
+    right =
+      Sphere.new()
+      |> put_in(
+        [:transform],
+        Matrix.multiply(Matrix.translation(1.5, 0.5, -0.5), Matrix.scaling(0.5, 0.5, 0.5))
+      )
+      |> put_in([:material], Material.new())
+      |> put_in([:material, :color], Color.new(0.5, 1, 0.1))
+      |> put_in([:material, :diffuse], 0.7)
+      |> put_in([:material, :specular], 0.3)
+
+    left =
+      Sphere.new()
+      |> put_in(
+        [:transform],
+        Matrix.multiply(Matrix.translation(-1.5, 0.33, -0.75), Matrix.scaling(0.33, 0.33, 0.33))
+      )
+      |> put_in([:material], Material.new())
+      |> put_in([:material, :color], Color.new(1, 0.8, 0.1))
+      |> put_in([:material, :diffuse], 0.7)
+      |> put_in([:material, :specular], 0.3)
+
+    world =
+      World.new()
+      |> Map.put(:light_source, Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
+
+    world = Map.put(world, :objects, [floor, left_wall, right_wall, middle, right, left])
+
+    camera =
+      Camera.new(1600, 800, :math.pi() / 3)
+      |> Map.put(
+        :transform,
+        Transformation.view_transform(
+          Point.new(0, 1.5, -5),
+          Point.new(0, 1, 0),
+          Point.new(0, 1, 0)
+        )
+      )
+
+    canvas = Camera.render(camera, world)
+
+    write_ppm(canvas, "simple_scene.ppm")
   end
 
   defp plot(canvas, x, y) do
