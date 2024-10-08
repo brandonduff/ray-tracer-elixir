@@ -14,17 +14,21 @@ defmodule RayTracerElixir.Material do
     |> Map.merge(Map.new(opts))
   end
 
-  def lighting(material, light, point, eyev, normalv) do
+  def lighting(material, light, point, eyev, normalv, in_shadow \\ false) do
     result = %{material: material, light: light, normalv: normalv, eyev: eyev, point: point}
 
     result = Map.put(result, :effective_color, effective_color(result))
     result = Map.put(result, :lightv, lightv(result))
     result = Map.put(result, :ambient, ambient(result))
     result = Map.put(result, :light_dot_normal, light_dot_normal(result))
-    result = Map.put(result, :diffuse, diffuse(result))
-    result = Map.put(result, :specular, specular(result))
 
-    result.ambient |> Tuple.add(result.diffuse) |> Tuple.add(result.specular)
+    if in_shadow do
+      result.ambient
+    else
+      result = Map.put(result, :diffuse, diffuse(result))
+      result = Map.put(result, :specular, specular(result))
+      result.ambient |> Tuple.add(result.diffuse) |> Tuple.add(result.specular)
+    end
   end
 
   defp effective_color(%{material: material, light: light}) do

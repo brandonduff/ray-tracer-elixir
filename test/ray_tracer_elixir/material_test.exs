@@ -81,5 +81,16 @@ defmodule RayTracerElixir.MaterialTest do
       # ambient light
       assert Tuple.equal?(result, Color.new(0.1, 0.1, 0.1))
     end
+
+    test "Lighting with the surface in shadow", %{m: m, position: position} do
+      eyev = Vector.new(0, 0, -1)
+      normalv = Vector.new(0, 0, -1)
+      light = Light.point_light(Point.new(0, 0, -10), Color.new(1, 1, 1))
+      in_shadow = true
+
+      result = Material.lighting(m, light, position, eyev, normalv, in_shadow)
+
+      assert Tuple.equal?(result, Color.new(0.1, 0.1, 0.1))
+    end
   end
 end
