@@ -41,9 +41,10 @@ defmodule RayTracerElixir.World do
     Material.lighting(
       comps.object.material,
       world.light_source,
-      comps.point,
+      comps.over_point,
       comps.eyev,
-      comps.normalv
+      comps.normalv,
+      shadowed?(world, comps.over_point)
     )
   end
 

@@ -1,6 +1,8 @@
 defmodule RayTracerElixir.IntersectionTest do
   use ExUnit.Case, async: true
 
+  alias RayTracerElixir.Numbers
+  alias RayTracerElixir.Matrix
   alias RayTracerElixir.Ray
   alias RayTracerElixir.Vector
   alias RayTracerElixir.Point
@@ -108,5 +110,16 @@ defmodule RayTracerElixir.IntersectionTest do
     assert comps.eyev == Vector.new(0, 0, -1)
     assert comps.inside
     assert comps.normalv == Vector.new(0, 0, -1)
+  end
+
+  test "The hit should offset the point" do
+    r = Ray.new(Point.new(0, 0, -5), Vector.new(0, 0, 1))
+    shape = Sphere.new() |> Sphere.set_transform(Matrix.translation(0, 0, 1))
+    i = Intersection.new(5, shape)
+
+    comps = Intersection.prepare_computations(i, r)
+
+    assert comps.over_point.z < -Numbers.epsilon() / 2
+    assert comps.point.z > comps.over_point.z
   end
 end

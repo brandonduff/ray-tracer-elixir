@@ -76,7 +76,7 @@ defmodule RayTracerElixir.WorldTest do
     comps = Intersection.prepare_computations(i, r)
     c = World.shade_hit(w, comps)
 
-    assert Tuple.equal?(c, Color.new(0.90498, 0.90498, 0.90498))
+    assert Tuple.equal?(c, Color.new(0.1, 0.1, 0.1))
   end
 
   test "The color when a ray misses" do
@@ -127,5 +127,21 @@ defmodule RayTracerElixir.WorldTest do
     refute World.shadowed?(w, p)
   end
 
+  test "shade_hit/2 is given an intersection in shadow" do
+    w =
+      World.new()
+      |> put_in([:light_source], Light.point_light(Point.new(0, 0, -10), Color.new(1, 1, 1)))
 
+    s1 = Sphere.new()
+    s2 = Sphere.new() |> Sphere.set_transform(Matrix.translation(0, 0, 10))
+    w = put_in(w, [:objects], [s1, s2])
+
+    r = Ray.new(Point.new(0, 0, 5), Vector.new(0, 0, 1))
+    i = Intersection.new(4, s2)
+
+    comps = Intersection.prepare_computations(i, r)
+    c = World.shade_hit(w, comps)
+
+    assert Tuple.equal?(c, Color.new(0.1, 0.1, 0.1))
+  end
 end
