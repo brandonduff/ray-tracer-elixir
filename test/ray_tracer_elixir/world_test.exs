@@ -108,4 +108,24 @@ defmodule RayTracerElixir.WorldTest do
     c = World.color_at(w, r)
     assert Tuple.equal?(c, get_in(w, [:objects, Access.at(1), :material, :color]))
   end
+
+  test "There is no shadow when nothing is colinear with point and light" do
+    w = World.default()
+    p = Point.new(0, 10, 0)
+    refute World.shadowed?(w, p)
+  end
+
+  test "The shadow when an object is between the point and the light" do
+    w = World.default()
+    p = Point.new(10, -10, 10)
+    assert World.shadowed?(w, p)
+  end
+
+  test "There is no shadow when an object is behind the point" do
+    w = World.default()
+    p = Point.new(-2, 2, -2)
+    refute World.shadowed?(w, p)
+  end
+
+
 end

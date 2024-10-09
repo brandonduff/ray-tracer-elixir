@@ -1,4 +1,7 @@
 defmodule RayTracerElixir.World do
+  alias RayTracerElixir.Ray
+  alias RayTracerElixir.Vector
+  alias RayTracerElixir.Tuple
   alias RayTracerElixir.Intersection
   alias RayTracerElixir.Material
   alias RayTracerElixir.Matrix
@@ -51,5 +54,18 @@ defmodule RayTracerElixir.World do
     else
       Color.new(0, 0, 0)
     end
+  end
+
+  def shadowed?(world, point) do
+    v = Tuple.subtract(world.light_source.position, point)
+    distance = Vector.magnitude(v)
+    direction = Vector.normalize(v)
+
+    r = Ray.new(point, direction)
+    intersections = intersect(world, r)
+
+    h = Intersection.hit(intersections)
+
+    h && h.t < distance
   end
 end
