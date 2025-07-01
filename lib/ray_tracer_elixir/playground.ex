@@ -209,7 +209,7 @@ defmodule RayTracerElixir.Playground do
 
     world =
       World.new()
-      |> Map.put(:light_source, Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
+      |> Map.put(:light, Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
 
     world = Map.put(world, :objects, [floor, left_wall, right_wall, middle, right, left])
 

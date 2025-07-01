@@ -11,13 +11,13 @@ defmodule RayTracerElixir.World do
   alias RayTracerElixir.Light
 
   def new(opts \\ []) do
-    %{light_source: nil, objects: []}
+    %{light: nil, objects: []}
     |> Map.merge(Map.new(opts))
   end
 
   def default do
     result =
-      new(light_source: Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
+      new(light: Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
 
     s1 =
       Sphere.new()
@@ -40,7 +40,7 @@ defmodule RayTracerElixir.World do
   def shade_hit(world, comps) do
     Material.lighting(
       comps.object.material,
-      world.light_source,
+      world.light,
       comps.over_point,
       comps.eyev,
       comps.normalv,
@@ -58,7 +58,7 @@ defmodule RayTracerElixir.World do
   end
 
   def shadowed?(world, point) do
-    v = Tuple.subtract(world.light_source.position, point)
+    v = Tuple.subtract(world.light.position, point)
     distance = Vector.magnitude(v)
     direction = Vector.normalize(v)
 

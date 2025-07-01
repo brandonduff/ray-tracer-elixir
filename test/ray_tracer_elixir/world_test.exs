@@ -16,7 +16,7 @@ defmodule RayTracerElixir.WorldTest do
   test "Creating a world" do
     w = World.new()
     assert Enum.empty?(w.objects)
-    assert nil == w.light_source
+    assert nil == w.light
   end
 
   test "The default world" do
@@ -36,7 +36,7 @@ defmodule RayTracerElixir.WorldTest do
 
     w = World.default()
 
-    assert w.light_source == light
+    assert w.light == light
     assert Enum.member?(w.objects, s1)
     assert Enum.member?(w.objects, s2)
   end
@@ -66,7 +66,7 @@ defmodule RayTracerElixir.WorldTest do
   test "Shading an intersection from the inside" do
     w = %{
       World.default()
-      | light_source: Light.point_light(Point.new(0, 0.25, 0), Color.new(1, 1, 1))
+      | light: Light.point_light(Point.new(0, 0.25, 0), Color.new(1, 1, 1))
     }
 
     r = Ray.new(Point.new(0, 0, 0), Vector.new(0, 0, 1))
@@ -130,7 +130,7 @@ defmodule RayTracerElixir.WorldTest do
   test "shade_hit/2 is given an intersection in shadow" do
     w =
       World.new()
-      |> put_in([:light_source], Light.point_light(Point.new(0, 0, -10), Color.new(1, 1, 1)))
+      |> put_in([:light], Light.point_light(Point.new(0, 0, -10), Color.new(1, 1, 1)))
 
     s1 = Sphere.new()
     s2 = Sphere.new() |> Sphere.set_transform(Matrix.translation(0, 0, 10))
