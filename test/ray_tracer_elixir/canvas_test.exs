@@ -9,10 +9,7 @@ defmodule RayTracerElixir.CanvasTest do
     c = Canvas.new(10, 20)
     assert c.width == 10
     assert c.height == 20
-    assert length(c.pixels) == 20
-    assert length(hd(c.pixels)) == 10
-    assert length(List.flatten(c.pixels)) == 200
-    Enum.each(List.flatten(c.pixels), &Tuple.equal?(Color.new(0, 0, 0), &1))
+    Enum.each(:array.to_list(c.pixels), &Tuple.equal?(Color.new(0, 0, 0), &1))
   end
 
   test "writing a pixel to the canvas" do

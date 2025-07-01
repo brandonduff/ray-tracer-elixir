@@ -28,17 +28,17 @@ defmodule RayTracerElixir.PPMTest do
       |> PPM.lines()
 
     assert Enum.slice(lines, 3..5) == [
-      "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 0 0 0",
-      "0 0 0 0 0 0 0 0 0 0 0 255",
-      ""
-    ]
+             "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 0 0 0 0 0 0 0 0 0 0",
+             "0 0 0 0 0 0 0 0 0 0 0 255",
+             ""
+           ]
   end
 
   test "splitting long lines in PPM files" do
     c =
       Canvas.new(10, 2)
-      |> Canvas.transform(fn canvas, x, y ->
-        Canvas.write_pixel(canvas, x, y, Color.new(1, 0.8, 0.6))
+      |> Canvas.transform(fn _idx, _val ->
+        Color.new(1, 0.8, 0.6)
       end)
 
     lines = PPM.write(c) |> PPM.lines()

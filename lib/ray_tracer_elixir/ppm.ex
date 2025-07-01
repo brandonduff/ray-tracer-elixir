@@ -48,17 +48,21 @@ defmodule RayTracerElixir.PPM do
     }
   end
 
-  defp print_line(pixels) do
-    pixels
-    |> Enum.map(&Color.scale(&1, @scale))
-    |> Enum.flat_map(fn pixel ->
-      [to_string(pixel.red), to_string(pixel.green), to_string(pixel.blue)]
-    end)
+  defp print_pixels(pixels) do
+    :array.map(
+      fn _i, pixel ->
+        pixel = Color.scale(pixel, @scale)
+        [to_string(pixel.red), to_string(pixel.green), to_string(pixel.blue)]
+      end,
+      pixels
+    )
+    |> :array.to_list()
+    |> List.flatten()
   end
 
   defp print_lines(pixel_grid) do
     pixel_grid
-    |> Enum.flat_map(&print_line/1)
+    |> print_pixels()
     |> ensure_line_limit(70)
   end
 end
