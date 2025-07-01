@@ -16,9 +16,6 @@ defmodule RayTracerElixir.World do
   end
 
   def default do
-    result =
-      new(light: Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
-
     s1 =
       Sphere.new()
       |> Map.put(
@@ -27,7 +24,17 @@ defmodule RayTracerElixir.World do
       )
 
     s2 = Sphere.new(transform: Matrix.scaling(0.5, 0.5, 0.5))
-    Map.put(result, :objects, [s1, s2])
+
+    new(light: Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
+    |> add_objects([s1, s2])
+  end
+
+  def add_objects(world, objects) do
+    Enum.reduce(objects, world, &add_object(&2, &1))
+  end
+
+  def add_object(world, object) do
+    Map.put(world, :objects, world.objects ++ [object])
   end
 
   def intersect(world, ray) do

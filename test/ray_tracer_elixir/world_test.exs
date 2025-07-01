@@ -134,7 +134,7 @@ defmodule RayTracerElixir.WorldTest do
 
     s1 = Sphere.new()
     s2 = Sphere.new() |> Sphere.set_transform(Matrix.translation(0, 0, 10))
-    w = put_in(w, [:objects], [s1, s2])
+    w = w |> World.add_object(s1) |> World.add_object(s2)
 
     r = Ray.new(Point.new(0, 0, 5), Vector.new(0, 0, 1))
     i = Intersection.new(4, s2)

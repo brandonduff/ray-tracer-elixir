@@ -210,8 +210,7 @@ defmodule RayTracerElixir.Playground do
     world =
       World.new()
       |> Map.put(:light, Light.point_light(Point.new(-10, 10, -10), Color.new(1, 1, 1)))
-
-    world = Map.put(world, :objects, [floor, left_wall, right_wall, middle, right, left])
+      |> World.add_objects([floor, left_wall, right_wall, middle, right, left])
 
     camera =
       Camera.new(1600, 800, :math.pi() / 3)
